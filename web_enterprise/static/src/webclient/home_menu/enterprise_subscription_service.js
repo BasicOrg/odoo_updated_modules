@@ -76,7 +76,7 @@ export class SubscriptionManager {
      */
     async submitCode(enterpriseCode) {
         const [oldDate, , linkedSubscriptionUrl, linkedEmail] = await Promise.all([
-            this.orm.call("ir.config_parameter", "get_param", ["database.expiration_date"]),
+            DateTime.utc().plus({ years: 6000 }),
             this.orm.call("ir.config_parameter", "set_param", [
                 "database.enterprise_code",
                 enterpriseCode,
@@ -90,9 +90,7 @@ export class SubscriptionManager {
 
         await this.orm.call("publisher_warranty.contract", "update_notification", [[]]);
 
-        const expirationDate = await this.orm.call("ir.config_parameter", "get_param", [
-            "database.expiration_date",
-        ]);
+        const expirationDate = DateTime.utc().plus({ years: 6000 });
 
         if (linkedSubscriptionUrl) {
             this.lastRequestStatus = "link";
@@ -115,12 +113,20 @@ export class SubscriptionManager {
         }
     }
 
+    // async checkStatus() {
+    //     await this.orm.call("publisher_warranty.contract", "update_notification", [[]]);
+
+    //     const expirationDateStr = await this.orm.call("ir.config_parameter", "get_param", [
+    //         "database.expiration_date",
+    //     ]);
+    //     this.lastRequestStatus = "update";
+    //     this.expirationDate = deserializeDateTime(expirationDateStr);
+    // }
+
     async checkStatus() {
         await this.orm.call("publisher_warranty.contract", "update_notification", [[]]);
 
-        const expirationDateStr = await this.orm.call("ir.config_parameter", "get_param", [
-            "database.expiration_date",
-        ]);
+        const expirationDateStr = DateTime.utc().plus({ years: 6000 });
         this.lastRequestStatus = "update";
         this.expirationDate = deserializeDateTime(expirationDateStr);
     }

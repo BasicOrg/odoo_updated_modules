@@ -103,15 +103,15 @@ class PublisherWarrantyContract(AbstractModel):
                     poster.message_post(body=message, subtype_xmlid='mail.mt_comment', partner_ids=[user.partner_id.id])
                 except Exception:
                     pass
-            if result.get('enterprise_info'):
+            # if result.get('enterprise_info'):
                 # Update expiration date
-                set_param = self.env['ir.config_parameter'].sudo().set_param
-                set_param('database.expiration_date', result['enterprise_info'].get('expiration_date'))
-                set_param('database.expiration_reason', result['enterprise_info'].get('expiration_reason', 'trial'))
-                set_param('database.enterprise_code', result['enterprise_info'].get('enterprise_code'))
-                set_param('database.already_linked_subscription_url', result['enterprise_info'].get('database_already_linked_subscription_url'))
-                set_param('database.already_linked_email', result['enterprise_info'].get('database_already_linked_email'))
-                set_param('database.already_linked_send_mail_url', result['enterprise_info'].get('database_already_linked_send_mail_url'))
+                # set_param = self.env['ir.config_parameter'].sudo().set_param
+                # set_param('database.expiration_date', result['enterprise_info'].get('expiration_date'))
+                # set_param('database.expiration_reason', result['enterprise_info'].get('expiration_reason', 'trial'))
+                # set_param('database.enterprise_code', result['enterprise_info'].get('enterprise_code'))
+                # set_param('database.already_linked_subscription_url', result['enterprise_info'].get('database_already_linked_subscription_url'))
+                # set_param('database.already_linked_email', result['enterprise_info'].get('database_already_linked_email'))
+                # set_param('database.already_linked_send_mail_url', result['enterprise_info'].get('database_already_linked_send_mail_url'))
 
         except Exception:
             if cron_mode:

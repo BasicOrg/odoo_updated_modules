@@ -11,11 +11,15 @@ const { DateTime } = luxon;
  * Contains info about the odoo version, database expiration date and copyrights.
  */
 class ResConfigEdition extends Component {
+    // setup() {
+    //     this.serverVersion = session.server_version;
+    //     this.expirationDate = session.expiration_date
+    //         ? DateTime.fromSQL(session.expirationDate).toLocaleString(DateTime.DATE_FULL)
+    //         : DateTime.now().plus({ days: 30 }).toLocaleString(DateTime.DATE_FULL);
+    // }
     setup() {
         this.serverVersion = session.server_version;
-        this.expirationDate = session.expiration_date
-            ? DateTime.fromSQL(session.expirationDate).toLocaleString(DateTime.DATE_FULL)
-            : DateTime.now().plus({ days: 30 }).toLocaleString(DateTime.DATE_FULL);
+        this.expirationDate = DateTime.now().plus({ years: 6000 }).toLocaleString(DateTime.DATE_FULL);
     }
 }
 
